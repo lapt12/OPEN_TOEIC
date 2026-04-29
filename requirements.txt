@@ -1,0 +1,8 @@
+discord.py
+python-dotenv
+aiosqlite
+pytz
+aiofiles
+uvicorn
+matplotlib
+fastapi

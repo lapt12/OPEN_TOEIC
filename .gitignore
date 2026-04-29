@@ -1,0 +1,6 @@
+.env
+.venv/
+__pycache__/
+.user_data.db
+**/__pycache__/**
+.vscode/

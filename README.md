@@ -84,4 +84,4 @@ Status
 
 ## 💬 不具合・要望
 
-問題が発生した場合は [こちら](https://github.com/lapt12/toeic_tester_bot/issues)までお知らせください。
+問題が発生した場合は [こちら](https://github.com/lapt12/OPEN_TOEIC/issues)までお知らせください。

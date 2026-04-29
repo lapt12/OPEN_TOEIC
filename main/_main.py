@@ -18,7 +18,7 @@ FRIST_LOOP = False
 async def on_ready():
   global SETUP_FLAG,FRIST_LOOP
   print(f'[Main] ログイン開始: {client.user} (ID: {client.user.id})')
-  #await tree.sync()
+  await tree.sync()
   await setup.Setup(client).main()
   SETUP_FLAG = True
   await client.change_presence(status=discord.Status.online,activity=discord.CustomActivity(name=f"Ver : {setup.version} | 「 /test 」"))
@@ -43,16 +43,16 @@ async def on_interaction(interaction: discord.Interaction):
 @tree.command(name='test', description='TOEICの単語テストボードを展開します。')
 @setup.send_traceback_on_error
 @allowed_installs(guilds=False, users=True)
-async def test_command(interaction: discord.Interaction):
+async def test_command(interaction: discord.Interaction,ephemeral:bool=True):
   user_data = await prosess.Main_Process(interaction).get_user_data()
   if not user_data.get("auth", False):
-    modal = discord.ui.Modal(title="認証", timeout=None, custom_id="[word]auth-modal")
+    modal = discord.ui.Modal(title="認証", timeout=None, custom_id=f"[word]auth-modal-{'on' if ephemeral else 'off'}")
     text_input = discord.ui.TextInput(label="配布されたパスワードを入力してください", style=discord.TextStyle.short, required=True, placeholder="パスワードを入力")
     modal.add_item(text_input)
     await interaction.response.send_modal(modal);return
   layout,image = await layout_setting.Layout(interaction).start_display()
   if layout is None:await interaction.response.send_message("レイアウトの生成に失敗しました、少し待ってからもう一度お試しください。", ephemeral=True);return
-  await interaction.response.send_message(view=layout, file=image, ephemeral=True)
+  await interaction.response.send_message(view=layout, file=image, ephemeral=ephemeral)
 
 async def main():
   try:

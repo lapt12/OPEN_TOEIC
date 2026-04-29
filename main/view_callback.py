@@ -1,5 +1,5 @@
 import discord
-import setup,copy,layout_setting
+import setup,copy,layout_setting,prosess
 
 class Main_Callback:
   def __init__(self,interaction:discord.Interaction) -> None:
@@ -16,6 +16,8 @@ class Main_Callback:
   @setup.send_traceback_on_error
   async def MAIN(self) -> None:
     self.custom_id = self.inter.data.get("custom_id", "").replace("[word]", "")
+    if not "auth-modal" in self.custom_id and not prosess.Main_Process(self.inter).check_board_owner():
+      await self.inter.response.send_message("ボードを操作する権利がありません。", ephemeral=True);return
     try:await [func for name,func in self.funcs.items() if self.custom_id.startswith(name)][0]()
     except IndexError:await self.inter.response.send_message("[word]の中に有効なcallbackが見つかりませんでした。", ephemeral=True)
 
@@ -55,7 +57,7 @@ class Main_Callback:
       if str(self.inter.user.id) not in setup.cache_user_act:
         setup.cache_user_act[str(self.inter.user.id)] = copy.deepcopy(setup.default_user_data)
       setup.cache_user_act[str(self.inter.user.id)]["auth"] = True
-      await _main.test_command.callback(self.inter)
+      await _main.test_command.callback(self.inter,True if self.custom_id.endswith("on") else False)
       await self.inter.followup.send("認証に成功しました！", ephemeral=True)
     else:
       await self.inter.response.send_message("認証に失敗しました。少し待ってから、再度入力してください。", ephemeral=True)

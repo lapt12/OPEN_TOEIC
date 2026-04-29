@@ -1,6 +1,6 @@
 import discord
 import mani,setup
-import aiohttp,asyncio,copy,base64,random
+import aiohttp,asyncio,copy,base64,random,re
 
 DEFAULT_IMAGE_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII="
 
@@ -37,6 +37,12 @@ class Main_Process(mani.Collection):
     setup.cache_user_act[str(user.id)]["user_name"] = user.name
     return copy.deepcopy(setup.cache_user_act[str(user.id)])
   
+  def check_board_owner(self) -> bool:
+    board_content = [in_data for in_data in list(self.inter.message.components)[0].to_dict()["components"] if in_data["type"] == 9][0]["components"][0]["content"]
+    m = re.search(r"\((\d+)\)", board_content)
+    if m:return m.group(1) == str(self.inter.user.id)
+    return False
+
   def get_sum_achieve(self,data:dict[str,dict],quiz_number:int=None) -> int:
     achieve_num,sum_answer_count = 0,0
     if quiz_number is None:
